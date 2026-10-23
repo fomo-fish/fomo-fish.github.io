@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:title" content="FOMOFISH">
+<meta property="og:description" content="把 SMC／ICT 交易模型畫成短動畫的交易教室">
+<link rel="icon" href="avatar.jpg">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>FOMOFISH</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="FOMOFISH｜把 SMC／ICT 交易模型畫成短動畫的交易教室">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: phone-first link page; on wide screens a sticky profile column beside the content column.
+   Paper and ink come from the FOMOFISH video series (cream paper, navy ink, candle green/red, check teal). */
+:root {
+  --paper: #f7f1e6;
+  --card: #fffaf2;
+  --ink: #1c2756;
+  --ink-soft: #5b6386;
+  --line: rgba(28, 39, 86, 0.14);
+  --blue: #2457c5;
+  --green: #1f9d63;
+  --red: #dd3b4f;
+  --teal: #14a9c4;
+  --chip: rgba(36, 87, 197, 0.1);
+  --shadow: 0 1px 0 rgba(28, 39, 86, 0.06), 0 10px 24px -14px rgba(28, 39, 86, 0.35);
+  --grain-opacity: 0.55;
+  --f-body: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --f-disp: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --r-lg: 22px;
+  --r-md: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1330; --card: #151d43; --ink: #f2ead9; --ink-soft: #a9b0d0; --line: rgba(242, 234, 217, 0.14);
+    --blue: #7ea5ff; --green: #3fcf8e; --red: #ff6f81; --teal: #45d2ea; --chip: rgba(126, 165, 255, 0.14);
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 28px -16px rgba(0, 0, 0, 0.8); --grain-opacity: 0.12; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1330; --card: #151d43; --ink: #f2ead9; --ink-soft: #a9b0d0; --line: rgba(242, 234, 217, 0.14);
+  --blue: #7ea5ff; --green: #3fcf8e; --red: #ff6f81; --teal: #45d2ea; --chip: rgba(126, 165, 255, 0.14);
+  --shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 28px -16px rgba(0, 0, 0, 0.8); --grain-opacity: 0.12; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 500 16px/1.6 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+  position: relative;
+}
+body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.43 0 0 0 0 0.36 0 0 0 0 0.27 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.page { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; display: grid; gap: 28px; }
+@media (min-width: 960px) {
+  .page { grid-template-columns: 360px minmax(0, 1fr); align-items: start; gap: 40px; }
+  .profile { position: sticky; top: calc(20px + env(safe-area-inset-top, 0px)); }
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; border-radius: 6px; }
+
+/* ---------- profile ---------- */
+.profile { display: grid; gap: 18px; min-width: 0; }
+.banner { position: relative; border-radius: var(--r-lg); overflow: visible; }
+.banner img.wide { display: block; width: 100%; aspect-ratio: 1200 / 509; object-fit: cover; border-radius: var(--r-lg); box-shadow: var(--shadow); }
+.avatar {
+  position: absolute; left: 18px; bottom: -38px; width: 92px; height: 92px; border-radius: 50%;
+  border: 4px solid var(--paper); box-shadow: var(--shadow); background: var(--card); object-fit: cover;
+}
+.who { padding-top: 34px; display: grid; gap: 6px; }
+.name { font: 900 clamp(2.3rem, 7vw, 2.8rem)/1 var(--f-disp); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+.handle { font: 700 0.86rem/1.3 var(--f-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin: 0; }
+.tagline { margin: 8px 0 0; font: 800 1.12rem/1.45 var(--f-disp); text-wrap: balance; }
+.bio { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; color: var(--ink-soft); font-size: 0.98rem; }
+.bio li { display: flex; gap: 8px; }
+.bio li::before { content: ""; flex: none; width: 6px; height: 6px; margin-top: 0.62em; border-radius: 50%; background: var(--teal); }
+.bio b { color: var(--ink); font-weight: 800; }
+
+.ticker { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 10px 12px 6px; box-shadow: var(--shadow); }
+.ticker-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font: 700 0.78rem/1.2 var(--f-body); color: var(--ink-soft); letter-spacing: 0.04em; }
+.ticker-head b { color: var(--ink); font-weight: 800; }
+#tape { display: block; width: 100%; height: 118px; }
+
+/* ---------- link buttons ---------- */
+.links { display: grid; gap: 10px; }
+.link {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px;
+  padding: 14px 16px; border-radius: var(--r-md); text-decoration: none;
+  background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.link:hover { transform: translateY(-1px); border-color: var(--blue); }
+.link .t { font: 800 1.02rem/1.3 var(--f-disp); min-width: 0; }
+.link .s { grid-column: 1; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.4; }
+.link .go { grid-row: 1 / span 2; grid-column: 2; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--chip); color: var(--blue); }
+.link.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.link.primary .s { color: var(--paper); opacity: 0.75; }
+.link.primary .go { background: rgba(255, 255, 255, 0.14); color: var(--paper); }
+.link[aria-disabled="true"] { cursor: default; }
+.link[aria-disabled="true"]:hover { transform: none; border-color: var(--line); }
+.link.primary[aria-disabled="true"]:hover { border-color: var(--ink); }
+.todo { justify-self: start; font: 700 0.72rem/1 var(--f-body); letter-spacing: 0.04em; padding: 4px 8px; border-radius: 999px; border: 1px dashed currentColor; opacity: 0.7; }
+
+/* ---------- main sections ---------- */
+main { display: grid; gap: 34px; min-width: 0; }
+section { display: grid; gap: 14px; min-width: 0; }
+.eyebrow { font: 800 0.78rem/1.2 var(--f-body); letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin: 0; }
+h2 { font: 900 clamp(1.45rem, 4.4vw, 1.8rem)/1.25 var(--f-disp); margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 0; color: var(--ink-soft); max-width: 60ch; }
+
+/* checklist */
+.lesson { display: grid; gap: 16px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow); }
+@media (min-width: 640px) { .lesson { grid-template-columns: 170px minmax(0, 1fr); align-items: start; } }
+.lesson-video { position: relative; border: 0; padding: 0; cursor: pointer; border-radius: var(--r-md); overflow: hidden; background: var(--paper); aspect-ratio: 9 / 16; width: 100%; max-width: 170px; box-shadow: var(--shadow); }
+@media (max-width: 639px) { .lesson-video { max-width: 132px; } }
+.lesson-video img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 52px; height: 52px; border-radius: 50%; background: rgba(28, 39, 86, 0.88); display: grid; place-items: center; color: #fff; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); }
+.lesson-top { display: flex; gap: 14px; align-items: flex-start; }
+@media (min-width: 640px) { .lesson-top { display: contents; } }
+.lesson-meta { display: grid; gap: 6px; min-width: 0; }
+@media (min-width: 640px) { .lesson-meta { display: none; } }
+.meta-line { font-size: 0.85rem; color: var(--ink-soft); }
+.checks { display: grid; gap: 8px; min-width: 0; }
+.checks h3 { margin: 0 0 4px; font: 900 1.18rem/1.35 var(--f-disp); }
+.q {
+  display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; align-items: start; text-align: left;
+  width: 100%; padding: 10px 12px; border-radius: 12px; cursor: pointer;
+  background: transparent; border: 1px solid var(--line); color: var(--ink); font: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.q:hover { border-color: var(--teal); }
+.q .box { grid-row: 1 / span 2; width: 26px; height: 26px; border-radius: 7px; border: 2.5px solid var(--ink-soft); display: grid; place-items: center; color: transparent; transition: all 0.15s ease; margin-top: 1px; }
+.q .qt { font-weight: 800; line-height: 1.4; }
+.q .qs { font-size: 0.84rem; color: var(--ink-soft); line-height: 1.45; }
+.q[aria-checked="true"] { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 9%, transparent); }
+.q[aria-checked="true"] .box { background: var(--teal); border-color: var(--teal); color: #fff; }
+.num { font-family: var(--f-disp); font-weight: 900; color: var(--blue); margin-right: 4px; font-variant-numeric: tabular-nums; }
+.verdict { display: grid; gap: 8px; margin-top: 6px; }
+.dashes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.dashes i { height: 6px; border-radius: 3px; background: var(--line); transition: background 0.2s ease; }
+.dashes i.on { background: var(--ink); }
+.verdict p { margin: 0; font-weight: 800; }
+.verdict p.ok { color: var(--green); }
+.verdict p.wait { color: var(--red); }
+.verdict .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.reset { background: none; border: 0; padding: 4px 0; color: var(--ink-soft); font: 700 0.85rem var(--f-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* video library */
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (min-width: 720px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.vid { display: grid; gap: 8px; text-align: left; background: none; border: 0; padding: 0; color: var(--ink); font: inherit; cursor: pointer; min-width: 0; }
+.vid .thumb { position: relative; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 9 / 16; width: 100%; background: var(--card); box-shadow: var(--shadow); border: 1px solid var(--line); }
+.vid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+.vid:hover img { transform: scale(1.03); }
+.vid .dur { position: absolute; right: 8px; bottom: 8px; font: 800 0.72rem/1 var(--f-body); padding: 5px 7px; border-radius: 6px; background: rgba(28, 39, 86, 0.85); color: #fff; font-variant-numeric: tabular-nums; }
+.vid .vt { font: 800 0.98rem/1.35 var(--f-disp); }
+.vid .vs { font-size: 0.82rem; line-height: 1.45; color: var(--ink-soft); }
+.tag { justify-self: start; font: 800 0.7rem/1 var(--f-body); letter-spacing: 0.04em; padding: 5px 8px; border-radius: 999px; background: var(--chip); color: var(--blue); }
+
+/* glossary */
+.terms { display: grid; gap: 0; margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+.term { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 4px 14px; padding: 13px 16px; border-top: 1px solid var(--line); }
+.term:first-child { border-top: 0; }
+.term dt { grid-row: 1 / span 2; font: 900 0.9rem/1 var(--f-disp); color: var(--blue); padding-top: 4px; letter-spacing: 0.02em; }
+.term .zh { font-weight: 800; margin: 0; }
+.term dd { margin: 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; }
+
+/* about */
+.about { display: grid; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow); }
+@media (min-width: 640px) { .about { grid-template-columns: 180px minmax(0, 1fr); align-items: center; } }
+.about img { width: 100%; max-width: 180px; border-radius: var(--r-md); display: block; }
+.about p { margin: 0; color: var(--ink-soft); }
+.about p + p { margin-top: 10px; }
+.steps4 { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.steps4 span { font: 800 0.8rem/1 var(--f-body); padding: 7px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink); }
+.steps4 span b { color: var(--teal); margin-right: 4px; }
+
+footer { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; border-top: 1px solid var(--line); padding-top: 16px; }
+footer p { margin: 0; }
+
+/* player */
+dialog { border: 0; padding: 0; background: transparent; max-width: min(420px, 92vw); width: 100%; color: #fff; }
+dialog::backdrop { background: rgba(8, 11, 26, 0.86); }
+.player { display: grid; gap: 10px; }
+.player-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.player-bar b { font: 800 1rem/1.3 var(--f-disp); min-width: 0; }
+.close { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.14); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
+.player video { width: 100%; max-height: 78vh; aspect-ratio: 9 / 16; background: #000; border-radius: 16px; display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="page">
+  <aside class="profile" aria-label="FOMOFISH 簡介">
+    <div class="banner">
+      <img class="wide" src="banner.jpg" alt="Crypto FOMO Aquarium 水彩橫幅：鬥魚、鯨魚、鯊魚和加密貨幣金幣在浪花裡">
+      <img class="avatar" src="avatar.jpg" alt="FOMOFISH 鬥魚頭像">
+    </div>
+    <div class="who">
+      <h1 class="name">FOMOFISH</h1>
+      <p class="handle">@fomo.fish · Crypto FOMO Aquarium</p>
+      <p class="tagline">把交易模型畫成 20 秒動畫的交易教室</p>
+    </div>
+    <ul class="bio">
+      <li><span>用動畫拆解 <b>SMC／ICT</b> 交易模型</span></li>
+      <li><span>流動性、結構轉換、FVG、訂單塊，一步一步畫給你看</span></li>
+      <li><span>先懂邏輯，再談進場</span></li>
+    </ul>
+    <div class="ticker">
+      <div class="ticker-head"><span><b>今日示範</b>　掃過前高 → CHoCH</span><span>模擬 K 線</span></div>
+      <canvas id="tape" role="img" aria-label="示意 K 線動畫：價格刺破前高後收回，接著跌破結構"></canvas>
+    </div>
+    <nav class="links" id="links" aria-label="社群連結"></nav>
+  </aside>
+
+  <main>
+    <section aria-labelledby="h-check">
+      <p class="eyebrow">本週教室</p>
+      <h2 id="h-check">下單前，先問自己 5 個問題</h2>
+      <div class="lesson">
+        <div class="lesson-top">
+          <button class="lesson-video" type="button" data-play="five" aria-label="播放：下單前的 5 個問題">
+            <img src="p-five.jpg" alt="">
+            <span class="play" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M6 3.5v13l10.5-6.5z" fill="currentColor"/></svg></span>
+          </button>
+          <div class="lesson-meta">
+            <p class="meta-line">59 秒・中文旁白</p>
+            <p class="lede">影片看完，拿你手上這筆單逐題打勾。少一題，就先別按下單。</p>
+          </div>
+        </div>
+        <div class="checks" id="checks">
+          <h3>你的這筆單，過關了嗎？</h3>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-lib">
+      <p class="eyebrow">模型圖鑑</p>
+      <h2 id="h-lib">每支一個模型，點開就能看</h2>
+      <p class="lede">K 線都是程式生成的模擬資料，只拿來說明邏輯。</p>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section aria-labelledby="h-terms">
+      <p class="eyebrow">名詞小抄</p>
+      <h2 id="h-terms">影片裡的英文縮寫</h2>
+      <dl class="terms" id="terms"></dl>
+    </section>
+
+    <section aria-labelledby="h-about">
+      <p class="eyebrow">關於</p>
+      <h2 id="h-about">別讓 FOMO 替你按下單</h2>
+      <div class="about">
+        <img src="fish.jpg" alt="FOMOFISH 水彩鬥魚主視覺">
+        <div>
+          <p>FOMO 是怕錯過。行情一噴，手就想追。FOMOFISH 想做的，是把每個進場理由拆開來看清楚，讓你照規則下單，而不是照心情。</p>
+          <p>每支影片都把一個模型拆成 3 到 5 步，順序幾乎都一樣：</p>
+          <div class="steps4" aria-label="看盤順序">
+            <span><b>1</b>找區域</span><span><b>2</b>等掃流動性</span><span><b>3</b>看結構轉換</span><span><b>4</b>回到缺口再進場</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>所有影片與圖解皆為教學示意，K 線為模擬資料，不構成投資建議。交易有風險，請自行評估、控制部位。</p>
+      <p>© 2026 FOMOFISH</p>
+    </footer>
+  </main>
+</div>
+
+<dialog id="player" aria-labelledby="player-title">
+  <div class="player">
+    <div class="player-bar"><b id="player-title"></b><button class="close" type="button" id="close" aria-label="關閉影片">×</button></div>
+    <video id="video" controls playsinline preload="none"></video>
+  </div>
+</dialog>
+
+<script>
+// 連結：url 填好就會變成可點的按鈕；空字串會顯示「連結待補」
+const LINKS = [
+  { label: 'Instagram', sub: '@fomo.fish｜每週新教學短片', url: 'https://www.instagram.com/fomo.fish/', primary: true },
+  { label: 'Threads', sub: '@fomo.fish｜觀念短文、盤後筆記', url: 'https://www.threads.com/@fomo.fish' },
+  { label: 'Telegram', sub: 'Fomo_Fish｜新片通知、交流', url: 'https://t.me/Fomo_Fish' },
+];
+
+const VIDEOS = [
+  { id: 'five', title: '下單前的 5 個問題', sub: 'POI、掃流動性、CHoCH、FVG、盈虧比，5 題都過才下單', tag: '教室', dur: '0:59' },
+  { id: 'stophunt', title: '為什麼你一停損就反轉', sub: '前低下面是大家的停損，先被掃、再反轉', tag: '流動性', dur: '0:35' },
+  { id: 'sameentry', title: '同樣進場，一個失敗', sub: 'A、B 進場一樣，差在前高的流動性', tag: '流動性', dur: '0:26' },
+  { id: 'fvgnot', title: 'FVG 不是訊號', sub: '看到缺口就進場會被打停損，要先掃流動性＋BOS', tag: 'FVG', dur: '0:26' },
+  { id: 'ifvg', title: 'IFVG 反轉進場', sub: '掃前低＋15 分 FVG，1 分 IFVG 成立再做多', tag: 'FVG', dur: '0:25' },
+  { id: 'smf', title: '掃・破・回', sub: '掃等高點 → MSS → 回到 FVG 中線做空', tag: '結構', dur: '0:26' },
+  { id: 'obtl', title: '訂單塊＋趨勢線', sub: '需求區做多，衝到訂單塊反手做空', tag: '訂單塊', dur: '0:26' },
+  { id: 'tri', title: '三角收斂', sub: '高點越來越低、低點越來越高，放量跌破', tag: '形態', dur: '0:26' },
+];
+
+const QUESTIONS = [
+  ['價格到高週期 POI 了嗎？', '還沒到關注區，就先不找進場。'],
+  ['有掃到流動性嗎？', '刺破前高、收盤收回來，才算掃過。'],
+  ['POI 裡做出 M 頭＋CHoCH 了嗎？', '收盤跌破中間低點；M 頭跑出區域的不算。'],
+  ['跌破時有留下 FVG 缺口嗎？', '等價格反彈回缺口再進場，不追。'],
+  ['盈虧比至少 1 : 2 嗎？', '停損放最高點上方，目標看下方前低。'],
+];
+
+const TERMS = [
+  ['POI', '關注區', '高週期上價格容易反應的區域，例如 4 小時的 FVG 或訂單塊。'],
+  ['BSL／SSL', '買方／賣方流動性', '前高上方、前低下方堆著的停損單。價格常先去拿這些單。'],
+  ['Sweep', '掃流動性', '刺破前高或前低、再收回來。停損被拿走，反轉的燃料就有了。'],
+  ['CHoCH', '性格轉變', '趨勢第一次反向跌破（或突破）結構點，代表方向可能要換了。'],
+  ['MSS', '市場結構轉換', '掃完流動性後，帶著力道破掉最近的結構點。ICT 常用的說法。'],
+  ['BOS', '結構破壞', '順著原本的趨勢再破一個高點或低點，趨勢延續。'],
+  ['FVG', '公允價值缺口', '三根 K 棒中間沒成交到的空隙，價格常回來補。'],
+  ['IFVG', '反轉 FVG', 'FVG 被收盤整個穿過，原本的壓力變支撐（或反過來）。'],
+  ['OB', '訂單塊', '大行情發動前最後一根反向 K 棒，常是回測時的反應區。'],
+  ['POC', '成交量最大價', '成交量分布裡成交最多的價位，像一塊磁鐵。'],
+];
+
+const arrow = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8M13 3 3 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const tick = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+// links
+const linksEl = document.getElementById('links');
+LINKS.forEach(l => {
+  const a = document.createElement('a');
+  a.className = 'link' + (l.primary ? ' primary' : '');
+  if (l.url) { a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; }
+  else { a.setAttribute('aria-disabled', 'true'); a.setAttribute('role', 'link'); }
+  a.innerHTML = `<span class="t"></span><span class="s"></span><span class="go">${arrow}</span>`;
+  a.querySelector('.t').textContent = l.label;
+  a.querySelector('.s').textContent = l.sub;
+  if (!l.url) { const t = document.createElement('span'); t.className = 'todo'; t.textContent = '連結待補'; a.appendChild(t); t.style.gridColumn = '1'; }
+  linksEl.appendChild(a);
+});
+
+// checklist
+const checksEl = document.getElementById('checks');
+const state = QUESTIONS.map(() => false);
+QUESTIONS.forEach(([q, s], i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'q'; b.id = 'q' + (i + 1);
+  b.setAttribute('role', 'checkbox'); b.setAttribute('aria-checked', 'false');
+  b.innerHTML = `<span class="box">${tick}</span><span class="qt"><span class="num">${i + 1}</span></span><span class="qs"></span>`;
+  b.querySelector('.qt').append(q);
+  b.querySelector('.qs').textContent = s;
+  b.addEventListener('click', () => { state[i] = !state[i]; b.setAttribute('aria-checked', String(state[i])); renderVerdict(); });
+  checksEl.appendChild(b);
+});
+const verdict = document.createElement('div');
+verdict.className = 'verdict';
+verdict.innerHTML = '<div class="dashes" aria-hidden="true">' + '<i></i>'.repeat(5) + '</div><div class="row"><p id="verdict" aria-live="polite"></p><button class="reset" type="button" id="reset">全部清除</button></div>';
+checksEl.appendChild(verdict);
+function renderVerdict() {
+  const n = state.filter(Boolean).length, p = document.getElementById('verdict');
+  verdict.querySelectorAll('.dashes i').forEach((d, i) => d.classList.toggle('on', i < n));
+  if (n === 5) { p.textContent = '5 題都打勾，可以照計畫下單。停損先掛好。'; p.className = 'ok'; }
+  else if (n === 0) { p.textContent = '一題一題確認，點一下就打勾。'; p.className = ''; }
+  else { p.textContent = `還差 ${5 - n} 題，這筆先別下。`; p.className = 'wait'; }
+}
+document.getElementById('reset').addEventListener('click', () => {
+  state.fill(false); checksEl.querySelectorAll('.q').forEach(b => b.setAttribute('aria-checked', 'false')); renderVerdict();
+});
+renderVerdict();
+
+// video grid
+const grid = document.getElementById('grid');
+VIDEOS.forEach(v => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'vid'; b.dataset.play = v.id;
+  b.setAttribute('aria-label', '播放：' + v.title);
+  b.innerHTML = `<span class="thumb"><img loading="lazy" src="p-${v.id}.jpg" alt=""><span class="dur">${v.dur}</span></span><span class="tag"></span><span class="vt"></span><span class="vs"></span>`;
+  b.querySelector('.tag').textContent = v.tag;
+  b.querySelector('.vt').textContent = v.title;
+  b.querySelector('.vs').textContent = v.sub;
+  grid.appendChild(b);
+});
+
+// glossary
+const termsEl = document.getElementById('terms');
+TERMS.forEach(([abbr, zh, d]) => {
+  const div = document.createElement('div'); div.className = 'term';
+  div.innerHTML = '<dt></dt><dd class="zh"></dd><dd></dd>';
+  div.children[0].textContent = abbr; div.children[1].textContent = zh; div.children[2].textContent = d;
+  termsEl.appendChild(div);
+});
+
+// player
+const dlg = document.getElementById('player'), video = document.getElementById('video');
+function openVideo(id) {
+  const v = VIDEOS.find(x => x.id === id); if (!v) return;
+  document.getElementById('player-title').textContent = v.title;
+  video.poster = `p-${id}.jpg`; video.src = `v-${id}.mp4`;
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  const p = video.play(); if (p && p.catch) p.catch(() => {});
+}
+function closeVideo() { video.pause(); video.removeAttribute('src'); video.load(); if (dlg.open) dlg.close(); }
+document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) openVideo(b.dataset.play); });
+document.getElementById('close').addEventListener('click', closeVideo);
+dlg.addEventListener('close', () => { video.pause(); });
+dlg.addEventListener('click', e => { if (e.target === dlg) closeVideo(); });
+
+// tape: 示意 K 線，一根根印出來，刺破前高後收回、再跌破結構
+(() => {
+  const cv = document.getElementById('tape'), ctx = cv.getContext('2d');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 走勢關鍵點 → 每根 K 棒（固定亂數，畫面每次一樣）
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const keys = [[0, 30], [9, 60], [13, 51], [17, 58], [18, 60], [20, 52], [27, 34]];
+  const path = i => { for (let k = 1; k < keys.length; k++) { const [x0, y0] = keys[k - 1], [x1, y1] = keys[k]; if (i <= x1) return y0 + (y1 - y0) * (i - x0) / (x1 - x0); } return keys[keys.length - 1][1]; };
+  const C = []; let prev = 29;
+  for (let i = 0; i <= 27; i++) {
+    const o = prev, c = path(i) + (rnd() - 0.5) * 3.2;
+    let h = Math.max(o, c) + rnd() * 1.6, l = Math.min(o, c) - rnd() * 1.6;
+    C.push([o, h, l, c]); prev = c;
+  }
+  const hiIdx = 9; C[hiIdx][1] = 63.5; const HIGH = 63.5;
+  C[18] = [C[17][3], 66.2, C[17][3] - 1, 60.6];          // 刺破前高、收回
+  const sweepI = 18, chochI = 21, neck = Math.min(...C.slice(13, 15).map(c => c[2]));
+  const T_PER = 0.2, HOLD = 2.2, LOOP = C.length * T_PER + HOLD;
+  let W = 0, H = 0, dpr = 1;
+  function size() { dpr = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * dpr; cv.height = H * dpr; }
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  function pill(text, x, y, bg) {
+    ctx.font = '800 11px Inter, "Noto Sans TC", sans-serif'; const w = ctx.measureText(text).width + 14;
+    ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(x - w / 2, y - 10, w, 20, 10); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, x, y + 0.5);
+  }
+  function draw(t) {
+    if (!W) size();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    const green = css('--green'), red = css('--red'), ink = css('--ink'), soft = css('--ink-soft'), blue = css('--blue'), teal = css('--teal');
+    const n = reduce ? C.length : Math.min(C.length, t / T_PER), fade = reduce ? 1 : 1 - Math.max(0, Math.min(1, (t - (LOOP - 0.5)) / 0.5));
+    const pad = 12, top = 22, bot = H - 8, pMin = 26, pMax = 68;
+    const X = i => pad + (i + 0.5) * (W - pad * 2) / C.length, Y = p => bot - (p - pMin) / (pMax - pMin) * (bot - top);
+    const bw = Math.max(3, (W - pad * 2) / C.length * 0.56);
+    ctx.globalAlpha = fade;
+    // 前高虛線
+    if (n > hiIdx + 1.5) {
+      const u = Math.min(1, (n - hiIdx - 1.5) / 2);
+      ctx.strokeStyle = soft; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(X(hiIdx), Y(HIGH)); ctx.lineTo(X(hiIdx) + (X(sweepI + 1) - X(hiIdx)) * u, Y(HIGH)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = soft; ctx.font = '700 10px Inter, "Noto Sans TC", sans-serif'; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+      ctx.fillText('前高', X(hiIdx) - 6, Y(HIGH) + 4);
+    }
+    // 中間低點（結構）
+    if (n > 15) { ctx.strokeStyle = ink; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(X(13), Y(neck)); ctx.lineTo(X(Math.min(n, chochI + 1)), Y(neck)); ctx.stroke(); }
+    // K 棒
+    for (let i = 0; i < Math.ceil(n); i++) {
+      let [o, h, l, c] = C[i]; const u = Math.min(1, n - i);
+      if (u < 1) { const cc = o + (c - o) * u; h = Math.min(h, Math.max(o, cc) + (h - Math.max(o, c)) * u); l = Math.max(l, Math.min(o, cc) - (Math.min(o, c) - l) * u); c = cc; }
+      const col = c >= o ? green : red, x = X(i);
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(x, Y(h)); ctx.lineTo(x, Y(l)); ctx.stroke();
+      const y0 = Y(Math.max(o, c)), y1 = Y(Math.min(o, c)); ctx.fillRect(x - bw / 2, y0, bw, Math.max(1.2, y1 - y0));
+    }
+    // 掃過圈＋標籤
+    if (n > sweepI + 1) {
+      const u = Math.min(1, (n - sweepI - 1) / 1.5);
+      ctx.strokeStyle = teal; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(X(sweepI), Y(66.2), 7, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * u); ctx.stroke();
+      if (u >= 1) pill('掃過 ✓', X(sweepI) - 42, Y(66.2) - 1, teal);
+    }
+    if (n > chochI + 1) pill('CHoCH ↓', X(chochI) + 34, Y(neck) + 2, red);
+    ctx.globalAlpha = 1;
+  }
+  let t0 = null;
+  function loop(ts) { if (t0 === null) t0 = ts; draw(((ts - t0) / 1000) % LOOP); requestAnimationFrame(loop); }
+  window.addEventListener('resize', () => { size(); if (reduce) draw(0); });
+  size();
+  if (reduce) draw(0); else requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>
