@@ -176,6 +176,37 @@ h2 { font: 900 clamp(1.45rem, 4.4vw, 1.8rem)/1.25 var(--f-disp); margin: 0; lett
 .term .zh { font-weight: 800; margin: 0; }
 .term dd { margin: 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; }
 
+/* beginner course */
+.course { display: grid; gap: 18px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow); }
+.course-top { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; justify-content: space-between; }
+.progress { display: grid; gap: 6px; flex: 1 1 220px; min-width: 0; }
+.progress p { margin: 0; font-weight: 800; font-variant-numeric: tabular-nums; }
+.dash12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; }
+.dash12 i { height: 6px; border-radius: 3px; background: var(--line); }
+.dash12 i.on { background: var(--teal); }
+.continue { flex: none; border: 0; cursor: pointer; padding: 12px 18px; border-radius: 999px; background: var(--ink); color: var(--paper); font: 800 0.98rem/1 var(--f-body); }
+.continue:hover { opacity: 0.9; }
+.stage { display: grid; gap: 8px; }
+.stage + .stage { border-top: 1px solid var(--line); padding-top: 16px; }
+.stage-head { display: flex; align-items: baseline; gap: 10px; }
+.stage-no { font: 800 0.78rem/1 var(--f-body); letter-spacing: 0.08em; color: var(--blue); }
+.stage-head h3 { margin: 0; font: 900 1.12rem/1.3 var(--f-disp); }
+.lessons { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 8px; border-radius: 14px; border: 1px solid var(--line); background: transparent; transition: background 0.15s ease, border-color 0.15s ease; }
+.lrow.done { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 8%, transparent); }
+.lplay { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; align-items: center; text-align: left; background: none; border: 0; padding: 0; color: var(--ink); font: inherit; cursor: pointer; min-width: 0; }
+.lthumb { position: relative; width: 58px; aspect-ratio: 9 / 16; border-radius: 8px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+.lthumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lthumb .dur { position: absolute; left: 4px; right: 4px; bottom: 4px; text-align: center; font: 800 0.62rem/1 var(--f-body); padding: 3px 0; border-radius: 4px; background: rgba(28, 39, 86, 0.85); color: #fff; font-variant-numeric: tabular-nums; }
+.ltext { display: grid; gap: 2px; min-width: 0; }
+.lno { font: 800 0.74rem/1.2 var(--f-body); color: var(--blue); letter-spacing: 0.04em; }
+.ltitle { font: 800 0.98rem/1.35 var(--f-disp); }
+.lsub { font-size: 0.8rem; line-height: 1.4; color: var(--ink-soft); }
+.ldone { width: 34px; height: 34px; border-radius: 9px; border: 2.5px solid var(--ink-soft); background: none; color: transparent; display: grid; place-items: center; cursor: pointer; padding: 0; }
+.lrow.done .ldone { background: var(--teal); border-color: var(--teal); color: #fff; }
+.graduate { margin: 0; padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--green) 12%, transparent); font-weight: 800; color: var(--green); }
+.graduate a { color: inherit; }
+
 /* about */
 .about { display: grid; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow); }
 @media (min-width: 640px) { .about { grid-template-columns: 180px minmax(0, 1fr); align-items: center; } }
@@ -230,6 +261,23 @@ dialog::backdrop { background: rgba(8, 11, 26, 0.86); }
   </aside>
 
   <main>
+    <section id="beginner" aria-labelledby="h-new">
+      <p class="eyebrow">新手必看</p>
+      <h2 id="h-new">從零開始的 12 堂課</h2>
+      <p class="lede">每課 30 秒左右，照順序看完，就看得懂 FOMOFISH 的模型片。影片看完會自動打勾，進度記在這台裝置上。</p>
+      <div class="course">
+        <div class="course-top">
+          <div class="progress">
+            <div class="dash12" id="dash12" aria-hidden="true"></div>
+            <p id="progress-text" aria-live="polite">已看完 0 / 12 課</p>
+          </div>
+          <button class="continue" id="continue" type="button">從第 1 課開始</button>
+        </div>
+        <div id="stages"></div>
+        <p class="graduate" id="graduate" hidden>12 課都看完了！下一步：<a href="#h-check">下單前的 5 個問題</a></p>
+      </div>
+    </section>
+
     <section aria-labelledby="h-check">
       <p class="eyebrow">本週教室</p>
       <h2 id="h-check">下單前，先問自己 5 個問題</h2>
@@ -296,6 +344,7 @@ dialog::backdrop { background: rgba(8, 11, 26, 0.86); }
 // 連結：url 填好就會變成可點的按鈕；空字串會顯示「連結待補」
 const LINKS = [
   { label: 'Instagram', sub: '@fomo.fish｜每週新教學短片', url: 'https://www.instagram.com/fomo.fish/', primary: true },
+  { label: '新手必看：12 堂課', sub: '從零開始，照順序看', url: '#beginner' },
   { label: 'Threads', sub: '@fomo.fish｜觀念短文、盤後筆記', url: 'https://www.threads.com/@fomo.fish' },
   { label: 'Telegram', sub: 'Fomo_Fish｜新片通知、交流', url: 'https://t.me/Fomo_Fish' },
 ];
@@ -311,6 +360,27 @@ const VIDEOS = [
   { id: 'tri', title: '三角收斂', sub: '高點越來越低、低點越來越高，放量跌破', tag: '形態', dur: '0:26' },
 ];
 
+// 新手教室：4 個階段 × 3 課
+const STAGES = [
+  { name: '看懂 K 線', lessons: [
+    { id: 'n01', title: '一根 K 棒的 4 個價格', sub: '開盤、最高、最低、收盤，K 棒怎麼長出來', dur: '0:48' },
+    { id: 'n02', title: '影線在說什麼', sub: '衝上去被打回、跌下去被買回', dur: '0:43' },
+    { id: 'n03', title: '週期：同一段行情，兩種方向', sub: '大週期看方向，小週期找進場', dur: '0:36' } ] },
+  { name: '看懂結構', lessons: [
+    { id: 'n04', title: '趨勢的骨架', sub: 'HH、HL、LH、LL，高低點決定趨勢', dur: '0:34' },
+    { id: 'n05', title: '支撐壓力是區域', sub: '不是一條線；跌破後支撐變壓力', dur: '0:31' },
+    { id: 'n06', title: 'BOS 與 CHoCH', sub: '趨勢延續還是轉向？看收盤', dur: '0:33' } ] },
+  { name: '看懂流動性', lessons: [
+    { id: 'n07', title: '流動性：停損都堆在哪', sub: '前高上、前低下、等高點', dur: '0:30' },
+    { id: 'n08', title: '真突破與假突破', sub: '收在外面才算，刺破收回要小心', dur: '0:31' },
+    { id: 'n09', title: 'FVG：價格為什麼會回頭', sub: '三根 K 棒的缺口，只是位置', dur: '0:32' } ] },
+  { name: '管好風險', lessons: [
+    { id: 'n10', title: '停損要放哪', sub: '放在想法失效的地方，留一點空間', dur: '0:33' },
+    { id: 'n11', title: '部位大小', sub: '數量＝願意虧的錢 ÷ 停損距離', dur: '0:29' },
+    { id: 'n12', title: '盈虧比', sub: '勝率 4 成也能賺，先看盈虧比', dur: '0:34' } ] },
+];
+const LESSONS = STAGES.flatMap(s => s.lessons).map((l, i) => Object.assign(l, { no: String(i + 1).padStart(2, '0') }));
+
 const QUESTIONS = [
   ['價格到高週期 POI 了嗎？', '還沒到關注區，就先不找進場。'],
   ['有掃到流動性嗎？', '刺破前高、收盤收回來，才算掃過。'],
@@ -325,7 +395,7 @@ const TERMS = [
   ['Sweep', '掃流動性', '刺破前高或前低、再收回來。停損被拿走，反轉的燃料就有了。'],
   ['CHoCH', '性格轉變', '趨勢第一次反向跌破（或突破）結構點，代表方向可能要換了。'],
   ['MSS', '市場結構轉換', '掃完流動性後，帶著力道破掉最近的結構點。ICT 常用的說法。'],
-  ['BOS', '結構破壞', '順著原本的趨勢再破一個高點或低點，趨勢延續。'],
+  ['BOS', '結構突破', '順著原本的趨勢再破一個高點或低點，趨勢延續。'],
   ['FVG', '公允價值缺口', '三根 K 棒中間沒成交到的空隙，價格常回來補。'],
   ['IFVG', '反轉 FVG', 'FVG 被收盤整個穿過，原本的壓力變支撐（或反過來）。'],
   ['OB', '訂單塊', '大行情發動前最後一根反向 K 棒，常是回測時的反應區。'],
@@ -340,7 +410,7 @@ const linksEl = document.getElementById('links');
 LINKS.forEach(l => {
   const a = document.createElement('a');
   a.className = 'link' + (l.primary ? ' primary' : '');
-  if (l.url) { a.href = l.url; a.target = '_blank'; a.rel = 'noopener'; }
+  if (l.url) { a.href = l.url; if (!l.url.startsWith('#')) { a.target = '_blank'; a.rel = 'noopener'; } }
   else { a.setAttribute('aria-disabled', 'true'); a.setAttribute('role', 'link'); }
   a.innerHTML = `<span class="t"></span><span class="s"></span><span class="go">${arrow}</span>`;
   a.querySelector('.t').textContent = l.label;
@@ -391,6 +461,42 @@ VIDEOS.forEach(v => {
   grid.appendChild(b);
 });
 
+// beginner course：進度只記在這台裝置（localStorage），讀不到就從 0 開始
+const DONE_KEY = 'fomofish-beginner-done';
+let done = new Set();
+try { done = new Set(JSON.parse(localStorage.getItem(DONE_KEY) || '[]')); } catch (e) {}
+function saveDone() { try { localStorage.setItem(DONE_KEY, JSON.stringify([...done])); } catch (e) {} }
+const stagesEl = document.getElementById('stages');
+STAGES.forEach((s, si) => {
+  const st = document.createElement('div'); st.className = 'stage';
+  st.innerHTML = `<div class="stage-head"><span class="stage-no">階段 ${si + 1}</span><h3></h3></div><ol class="lessons"></ol>`;
+  st.querySelector('h3').textContent = s.name;
+  const ol = st.querySelector('ol');
+  s.lessons.forEach(l => {
+    const li = document.createElement('li'); li.className = 'lrow'; li.dataset.id = l.id;
+    li.innerHTML = `<button class="lplay" type="button" data-play="${l.id}"><span class="lthumb"><img loading="lazy" src="p-${l.id}.jpg" alt=""><span class="dur">${l.dur}</span></span><span class="ltext"><span class="lno">第 ${l.no} 課</span><span class="ltitle"></span><span class="lsub"></span></span></button><button class="ldone" type="button" role="checkbox" aria-checked="false">${tick}</button>`;
+    li.querySelector('.ltitle').textContent = l.title; li.querySelector('.lsub').textContent = l.sub;
+    li.querySelector('.lplay').setAttribute('aria-label', `播放第 ${l.no} 課：${l.title}`);
+    li.querySelector('.ldone').setAttribute('aria-label', `第 ${l.no} 課看完了`);
+    li.querySelector('.ldone').addEventListener('click', () => { done.has(l.id) ? done.delete(l.id) : done.add(l.id); saveDone(); renderCourse(); });
+    ol.appendChild(li);
+  });
+  stagesEl.appendChild(st);
+});
+const dash12 = document.getElementById('dash12'); dash12.innerHTML = '<i></i>'.repeat(12);
+function renderCourse() {
+  const n = LESSONS.filter(l => done.has(l.id)).length, next = LESSONS.find(l => !done.has(l.id));
+  document.querySelectorAll('.lrow').forEach(li => { const d = done.has(li.dataset.id); li.classList.toggle('done', d); li.querySelector('.ldone').setAttribute('aria-checked', String(d)); });
+  dash12.querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', done.has(LESSONS[i].id)));
+  document.getElementById('progress-text').textContent = `已看完 ${n} / 12 課`;
+  const btn = document.getElementById('continue');
+  btn.textContent = !next ? '從第 1 課複習' : n === 0 ? '從第 1 課開始' : `繼續看：第 ${next.no} 課`;
+  btn.dataset.target = next ? next.id : LESSONS[0].id;
+  document.getElementById('graduate').hidden = n < 12;
+}
+document.getElementById('continue').addEventListener('click', e => openVideo(e.currentTarget.dataset.target));
+renderCourse();
+
 // glossary
 const termsEl = document.getElementById('terms');
 TERMS.forEach(([abbr, zh, d]) => {
@@ -402,13 +508,20 @@ TERMS.forEach(([abbr, zh, d]) => {
 
 // player
 const dlg = document.getElementById('player'), video = document.getElementById('video');
+let playing = null;
 function openVideo(id) {
-  const v = VIDEOS.find(x => x.id === id); if (!v) return;
-  document.getElementById('player-title').textContent = v.title;
+  const l = LESSONS.find(x => x.id === id), v = l || VIDEOS.find(x => x.id === id); if (!v) return;
+  playing = id;
+  document.getElementById('player-title').textContent = l ? `第 ${l.no} 課｜${l.title}` : v.title;
   video.poster = `p-${id}.jpg`; video.src = `v-${id}.mp4`;
   if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   const p = video.play(); if (p && p.catch) p.catch(() => {});
 }
+// 新手課看到 9 成就算看完
+video.addEventListener('timeupdate', () => {
+  if (!playing || !LESSONS.some(l => l.id === playing) || done.has(playing) || !video.duration) return;
+  if (video.currentTime / video.duration > 0.9){ done.add(playing); saveDone(); renderCourse(); }
+});
 function closeVideo() { video.pause(); video.removeAttribute('src'); video.load(); if (dlg.open) dlg.close(); }
 document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) openVideo(b.dataset.play); });
 document.getElementById('close').addEventListener('click', closeVideo);
