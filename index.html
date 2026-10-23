@@ -86,6 +86,8 @@ a { color: inherit; }
 .bio li { display: flex; gap: 8px; }
 .bio li::before { content: ""; flex: none; width: 6px; height: 6px; margin-top: 0.62em; border-radius: 50%; background: var(--teal); }
 .bio b { color: var(--ink); font-weight: 800; }
+.views { margin: 2px 0 0; display: inline-flex; align-items: center; gap: 6px; justify-self: start; font: 700 0.82rem/1 var(--f-body); color: var(--ink-soft); font-variant-numeric: tabular-nums; padding: 6px 10px; border-radius: 999px; background: var(--chip); }
+.views svg { color: var(--blue); flex: none; }
 
 
 /* ---------- link buttons ---------- */
@@ -187,6 +189,8 @@ dialog::backdrop { background: rgba(8, 11, 26, 0.86); }
 .player-bar b { font: 800 1rem/1.3 var(--f-disp); min-width: 0; }
 .close { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.14); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
 .player video { width: 100%; max-height: 78vh; aspect-ratio: 9 / 16; background: #000; border-radius: 16px; display: block; }
+/* 防下載：手機長按不跳「儲存影片／圖片」，不能拖曳 */
+video, .thumb img, .lthumb img { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
@@ -205,6 +209,7 @@ dialog::backdrop { background: rgba(8, 11, 26, 0.86); }
     <div class="who">
       <h1 class="name">FOMOFISH</h1>
       <p class="handle">@fomo.fish · Crypto FOMO Aquarium</p>
+      <p class="views" id="views" hidden><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="8" cy="8" r="2.2" fill="currentColor"/></svg><span id="views-n"></span></p>
       <p class="tagline">把交易模型畫成 20 秒動畫的交易教室</p>
     </div>
     <ul class="bio">
@@ -271,7 +276,7 @@ dialog::backdrop { background: rgba(8, 11, 26, 0.86); }
 <dialog id="player" aria-labelledby="player-title">
   <div class="player">
     <div class="player-bar"><b id="player-title"></b><button class="close" type="button" id="close" aria-label="關閉影片">×</button></div>
-    <video id="video" controls playsinline preload="none"></video>
+    <video id="video" controls playsinline preload="none" controlslist="nodownload noplaybackrate noremoteplayback" disablepictureinpicture disableremoteplayback></video>
   </div>
 </dialog>
 
@@ -285,6 +290,8 @@ const LINKS = [
 
 // 模型圖鑑：新影片加一行在最上面（影片 v-ID.mp4、封面 p-ID.jpg 放在同一層）
 const VIDEOS = [
+  { id: 'po3', title: 'PO3 三部曲', sub: '累積、操縱、派發：多頭日在開盤價下面找買點', tag: 'ICT', dur: '0:47' },
+  { id: 'cuphandle', title: '杯柄型態', sub: '圓弧杯底＋量縮杯柄，放量突破杯緣再進場', tag: '形態', dur: '0:42' },
   { id: 'five', title: '下單前的 5 個問題', sub: 'POI、掃流動性、CHoCH、FVG、盈虧比，5 題都過才下單', tag: '教室', dur: '0:59' },
   { id: 'stophunt', title: '為什麼你一停損就反轉', sub: '前低下面是大家的停損，先被掃、再反轉', tag: '流動性', dur: '0:35' },
   { id: 'sameentry', title: '同樣進場，一個失敗', sub: 'A、B 進場一樣，差在前高的流動性', tag: '流動性', dur: '0:26' },
@@ -425,6 +432,25 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-play
 document.getElementById('close').addEventListener('click', closeVideo);
 dlg.addEventListener('close', () => { video.pause(); });
 dlg.addEventListener('click', e => { if (e.target === dlg) closeVideo(); });
+
+// 防下載：影片和封面不給右鍵選單（另存影片／圖片）、不能拖曳出去
+document.addEventListener('contextmenu', e => { if (e.target.closest('video, .thumb, .lthumb')) e.preventDefault(); });
+document.addEventListener('dragstart', e => { if (e.target.closest('video, .thumb, .lthumb')) e.preventDefault(); });
+
+// 瀏覽次數：abacus 免費計數器（免註冊）。同一個分頁重新整理不重複算；連不上就不顯示
+(function () {
+  const api = 'https://abacus.jasoncameron.dev', counter = 'fomo-fish.github.io/views', SEEN = 'fomofish-counted';
+  let seen = false; try { seen = sessionStorage.getItem(SEEN) === '1'; } catch (e) {}
+  fetch(`${api}/${seen ? 'get' : 'hit'}/${counter}`)
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(d => {
+      if (typeof d.value !== 'number') return;
+      try { sessionStorage.setItem(SEEN, '1'); } catch (e) {}
+      document.getElementById('views-n').textContent = `瀏覽 ${d.value.toLocaleString('zh-TW')} 次`;
+      document.getElementById('views').hidden = false;
+    })
+    .catch(() => {});
+})();
 
 </script>
 
