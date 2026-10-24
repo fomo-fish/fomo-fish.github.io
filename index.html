@@ -238,6 +238,22 @@ video, .thumb img, .lthumb img { -webkit-touch-callout: none; -webkit-user-selec
       </div>
     </section>
 
+    <section id="futures" aria-labelledby="h-fut">
+      <p class="eyebrow">合約生存課</p>
+      <h2 id="h-fut">開合約之前，先學會活下來</h2>
+      <p class="lede">6 堂課講爆倉、逐倉全倉、槓桿、資金費率、強平價和插針。數字都是簡化示意，非投資建議。</p>
+      <div class="course">
+        <div class="course-top">
+          <div class="progress">
+            <div class="dash12" id="dash6" aria-hidden="true" style="grid-template-columns: repeat(6, 1fr)"></div>
+            <p id="fut-progress" aria-live="polite">已看完 0 / 6 課</p>
+          </div>
+          <button class="continue" id="fut-continue" type="button">從第 1 課開始</button>
+        </div>
+        <ol class="lessons" id="futures-list"></ol>
+      </div>
+    </section>
+
     <section aria-labelledby="h-lib">
       <p class="eyebrow">模型圖鑑</p>
       <h2 id="h-lib">每支一個模型，點開就能看</h2>
@@ -323,6 +339,16 @@ const STAGES = [
 ];
 const LESSONS = STAGES.flatMap(s => s.lessons).map((l, i) => Object.assign(l, { no: String(i + 1).padStart(2, '0') }));
 
+// 合約生存課：6 課（影片 v-c0N.mp4、封面 p-c0N.jpg）
+const FUTURES = [
+  { id: 'c01', title: '爆倉是怎麼發生的', sub: '同一段回檔，1 倍沒事，10 倍直接爆倉', dur: '0:41' },
+  { id: 'c02', title: '逐倉 vs 全倉', sub: '一筆單爆倉，為什麼整個帳戶都沒了', dur: '0:43' },
+  { id: 'c03', title: '槓桿不是賺更多', sub: '虧多少看部位；槓桿越大，爆倉越近', dur: '0:42' },
+  { id: 'c04', title: '資金費率在說什麼', sub: '費率很高＝做多很擠，容易先被掃', dur: '0:46' },
+  { id: 'c05', title: '爆倉價要在停損外面', sub: '下單前看強平價，降低槓桿把它推遠', dur: '0:44' },
+  { id: 'c06', title: '插針', sub: '一根影線掃掉一整排爆倉單（完結）', dur: '0:48' },
+].map((l, i) => Object.assign(l, { no: String(i + 1).padStart(2, '0') }));
+
 const TERMS = [
   ['POI', '關注區', '高週期上價格容易反應的區域，例如 4 小時的 FVG 或訂單塊。'],
   ['BSL／SSL', '買方／賣方流動性', '前高上方、前低下方堆著的停損單。價格常先去拿這些單。'],
@@ -391,7 +417,7 @@ STAGES.forEach((s, si) => {
 const dash12 = document.getElementById('dash12'); dash12.innerHTML = '<i></i>'.repeat(12);
 function renderCourse() {
   const n = LESSONS.filter(l => done.has(l.id)).length, next = LESSONS.find(l => !done.has(l.id));
-  document.querySelectorAll('.lrow').forEach(li => { const d = done.has(li.dataset.id); li.classList.toggle('done', d); li.querySelector('.ldone').setAttribute('aria-checked', String(d)); });
+  stagesEl.querySelectorAll('.lrow').forEach(li => { const d = done.has(li.dataset.id); li.classList.toggle('done', d); li.querySelector('.ldone').setAttribute('aria-checked', String(d)); });
   dash12.querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', done.has(LESSONS[i].id)));
   document.getElementById('progress-text').textContent = `已看完 ${n} / 12 課`;
   const btn = document.getElementById('continue');
@@ -401,6 +427,34 @@ function renderCourse() {
 }
 document.getElementById('continue').addEventListener('click', e => openVideo(e.currentTarget.dataset.target));
 renderCourse();
+
+// 合約生存課：進度另外記（localStorage），和新手課分開
+const FUT_KEY = 'fomofish-futures-done';
+let futDone = new Set();
+try { futDone = new Set(JSON.parse(localStorage.getItem(FUT_KEY) || '[]')); } catch (e) {}
+function saveFut() { try { localStorage.setItem(FUT_KEY, JSON.stringify([...futDone])); } catch (e) {} }
+const futList = document.getElementById('futures-list');
+FUTURES.forEach(l => {
+  const li = document.createElement('li'); li.className = 'lrow'; li.dataset.id = l.id;
+  li.innerHTML = `<button class="lplay" type="button" data-play="${l.id}"><span class="lthumb"><img loading="lazy" src="p-${l.id}.jpg" alt=""><span class="dur">${l.dur}</span></span><span class="ltext"><span class="lno">合約課 ${l.no}</span><span class="ltitle"></span><span class="lsub"></span></span></button><button class="ldone" type="button" role="checkbox" aria-checked="false">${tick}</button>`;
+  li.querySelector('.ltitle').textContent = l.title; li.querySelector('.lsub').textContent = l.sub;
+  li.querySelector('.lplay').setAttribute('aria-label', `播放合約課 ${l.no}：${l.title}`);
+  li.querySelector('.ldone').setAttribute('aria-label', `合約課 ${l.no} 看完了`);
+  li.querySelector('.ldone').addEventListener('click', () => { futDone.has(l.id) ? futDone.delete(l.id) : futDone.add(l.id); saveFut(); renderFutures(); });
+  futList.appendChild(li);
+});
+const dash6 = document.getElementById('dash6'); dash6.innerHTML = '<i></i>'.repeat(FUTURES.length);
+function renderFutures() {
+  const n = FUTURES.filter(l => futDone.has(l.id)).length, next = FUTURES.find(l => !futDone.has(l.id));
+  futList.querySelectorAll('.lrow').forEach(li => { const d = futDone.has(li.dataset.id); li.classList.toggle('done', d); li.querySelector('.ldone').setAttribute('aria-checked', String(d)); });
+  dash6.querySelectorAll('i').forEach((d, i) => d.classList.toggle('on', futDone.has(FUTURES[i].id)));
+  document.getElementById('fut-progress').textContent = `已看完 ${n} / ${FUTURES.length} 課`;
+  const btn = document.getElementById('fut-continue');
+  btn.textContent = !next ? '從第 1 課複習' : n === 0 ? '從第 1 課開始' : `繼續看：第 ${next.no} 課`;
+  btn.dataset.target = next ? next.id : FUTURES[0].id;
+}
+document.getElementById('fut-continue').addEventListener('click', e => openVideo(e.currentTarget.dataset.target));
+renderFutures();
 
 // glossary
 const termsEl = document.getElementById('terms');
@@ -415,17 +469,18 @@ TERMS.forEach(([abbr, zh, d]) => {
 const dlg = document.getElementById('player'), video = document.getElementById('video');
 let playing = null;
 function openVideo(id) {
-  const l = LESSONS.find(x => x.id === id), v = l || VIDEOS.find(x => x.id === id); if (!v) return;
+  const l = LESSONS.find(x => x.id === id), f = FUTURES.find(x => x.id === id), v = l || f || VIDEOS.find(x => x.id === id); if (!v) return;
   playing = id;
-  document.getElementById('player-title').textContent = l ? `第 ${l.no} 課｜${l.title}` : v.title;
+  document.getElementById('player-title').textContent = l ? `第 ${l.no} 課｜${l.title}` : f ? `合約課 ${f.no}｜${f.title}` : v.title;
   video.poster = `p-${id}.jpg`; video.src = `v-${id}.mp4`;
   if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   const p = video.play(); if (p && p.catch) p.catch(() => {});
 }
 // 新手課看到 9 成就算看完
 video.addEventListener('timeupdate', () => {
-  if (!playing || !LESSONS.some(l => l.id === playing) || done.has(playing) || !video.duration) return;
-  if (video.currentTime / video.duration > 0.9){ done.add(playing); saveDone(); renderCourse(); }
+  if (!playing || !video.duration || video.currentTime / video.duration <= 0.9) return;
+  if (LESSONS.some(l => l.id === playing) && !done.has(playing)){ done.add(playing); saveDone(); renderCourse(); }
+  if (FUTURES.some(l => l.id === playing) && !futDone.has(playing)){ futDone.add(playing); saveFut(); renderFutures(); }
 });
 function closeVideo() { video.pause(); video.removeAttribute('src'); video.load(); if (dlg.open) dlg.close(); }
 document.addEventListener('click', e => { const b = e.target.closest('[data-play]'); if (b) openVideo(b.dataset.play); });
